@@ -1,12 +1,12 @@
-- Return String
+#### Return String
 ```java
 @GetMapping("/")
-  public String root() {
+public String root() {
     return "Hello";
-  }
+}
 ```
 
-- Return JSON
+#### Return JSON
 ```java
 @GetMapping("/")
 public Map<String, String> root() {
@@ -14,7 +14,7 @@ public Map<String, String> root() {
 }
 ```
 
-- Query parameter in GET
+#### Query parameter in GET
 ```java
 @GetMapping("/")
 public String root(@RequestParam String name) {
@@ -22,7 +22,7 @@ public String root(@RequestParam String name) {
 }
 ```
 
-- GET and POST on same route
+#### GET and POST on same route
 ```java
 @GetMapping("/")
 public String getRoot() {
@@ -35,7 +35,7 @@ public String postRoot() {
 }
 ```
 
-- Conditional with header params
+#### Conditional with query param with specific value
 ```java
 @GetMapping(value = "/", params = "type=basic")
 public String basicType() {
@@ -48,7 +48,7 @@ public String advancedType() {
 }
 ```
 
-- Same method for multiple paths
+#### Same method for multiple paths
 ```java
 @GetMapping({"/", "/home", "/start"})
 public String rootAliases() {
@@ -56,7 +56,7 @@ public String rootAliases() {
 }
 ```
 
-- Custom status code
+#### Custom status code
 ```java
 @GetMapping("/")
 public ResponseEntity<String> root() {
@@ -66,7 +66,7 @@ public ResponseEntity<String> root() {
 }
 ```
 
-- Header
+#### Header
 ```java
 @GetMapping("/secret")
 public String secret(@RequestHeader("X-Auth-Token") String token) {
@@ -78,7 +78,7 @@ public String secret(@RequestHeader("X-Auth-Token") String token) {
 }
 ```
 
-- Optional header
+#### Optional header
 ```java
 @GetMapping("/secret")
 public String secret(@RequestHeader("X-Auth-Token") String token) {
