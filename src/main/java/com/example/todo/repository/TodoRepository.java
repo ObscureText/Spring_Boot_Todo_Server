@@ -1,6 +1,9 @@
 package com.example.todo.repository;
 
+import com.example.todo.constants.Messages;
+import com.example.todo.exception.AppException;
 import com.example.todo.models.Task;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -27,7 +30,7 @@ public class TodoRepository {
             Thread.sleep(500);
             return tasks.get(userId);
         } catch (Exception e) {
-            return null;
+            throw new AppException(HttpStatus.INTERNAL_SERVER_ERROR, Messages.Error.SOMETHING_WENT_WRONG);
         }
     }
 }

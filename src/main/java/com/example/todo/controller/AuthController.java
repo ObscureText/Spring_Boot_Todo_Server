@@ -1,6 +1,11 @@
 package com.example.todo.controller;
 
+import com.example.todo.constants.AppConstants;
+import com.example.todo.constants.EndPointUrls;
+import com.example.todo.constants.Messages;
+import com.example.todo.exception.AppException;
 import com.example.todo.service.AuthService;
+import com.example.todo.utils.CookieUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -10,11 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/auth")
-@CrossOrigin(
-    origins = "http://localhost:3000",
-    allowCredentials = "true"
-)
+@RequestMapping(EndPointUrls.Auth.BASE)
 public class AuthController {
     private final AuthService service;
 
@@ -23,59 +24,44 @@ public class AuthController {
         this.service = service;
     }
 
-    @GetMapping("/verify")
-    public ResponseEntity<String> verify(@CookieValue(value = "token", required = false) String token) {
+    @GetMapping(EndPointUrls.Auth.VERIFY)
+    public ResponseEntity<String> verify(@CookieValue(value = AppConstants.Cookie.TOKEN, required = false) String token) {
         if (token == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No token provided");
+            throw new AppException(HttpStatus.UNAUTHORIZED, Messages.Error.NO_TOKEN_PROVIDED);
         }
 
-        if (service.getUserNameFromSession(token) == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
-        }
-
-        return ResponseEntity.ok("Session verified");
+        final String username = service.getUserNameFromSession(token);
+        return ResponseEntity.ok(username);
     }
 
-    @PostMapping("/login")
+    @PostMapping(EndPointUrls.Auth.LOGIN)
     public ResponseEntity<String> login(@RequestBody Map<String, String> body) {
-        final String username = body.get("username");
-        final String password = body.get("password");
+        final String username = body.get(AppConstants.RequestField.USERNAME);
+        final String password = body.get(AppConstants.RequestField.PASSWORD);
 
         final String token = service.login(username, password);
-
-        if (token != null) {
-            final ResponseCookie cookie = ResponseCookie
-                    .from("token", token)
-                    .path("/")
-                    .maxAge(60 * 10)
-                    .sameSite("Lax")
-                    .build();
-
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .header("Set-Cookie", cookie.toString())
-                    .body("Login successful");
-        }
-
-        return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
-                .body("Invalid username of password");
-    }
-
-    @PostMapping("/logout")
-    public ResponseEntity<String> logout(@CookieValue(value = "token", required = false) String token) {
-        service.logout(token);
-
         final ResponseCookie cookie = ResponseCookie
-                .from("token", "")
-                .path("/")
-                .maxAge(0)
-                .sameSite("Lax")
+                .from(AppConstants.Cookie.TOKEN, token)
+                .path(AppConstants.Cookie.PATH_ROOT)
+                .maxAge(AppConstants.Cookie.MAX_AGE_TEN_MINS)
+                .sameSite(AppConstants.Cookie.SAME_SITE)
                 .build();
 
         return ResponseEntity
+                .status(HttpStatus.OK)
+                .header(AppConstants.Header.SET_COOKIE, cookie.toString())
+                .body(Messages.Success.LOGIN_SUCCESSFUL);
+    }
+
+    @PostMapping(EndPointUrls.Auth.LOGOUT)
+    public ResponseEntity<String> logout(@CookieValue(value = AppConstants.Cookie.TOKEN, required = false) String token) {
+        service.logout(token);
+
+        final ResponseCookie cookie = CookieUtils.deleteAuthCookie();
+
+        return ResponseEntity
                 .ok()
-                .header("Set-Cookie", cookie.toString())
-                .body("Logged out successfully");
+                .header(AppConstants.Header.SET_COOKIE, cookie.toString())
+                .body(Messages.Success.LOGOUT_SUCCESSFUL);
     }
 }

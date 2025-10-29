@@ -1,6 +1,7 @@
 package com.example.todo.controller;
 
-import com.example.todo.repository.TodoRepository;
+import com.example.todo.constants.AppConstants;
+import com.example.todo.constants.EndPointUrls;
 import com.example.todo.models.Task;
 import com.example.todo.service.TodoService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,11 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin(
-    origins = "http://localhost:3000",
-    allowCredentials = "true"
-)
-@RequestMapping("/todo")
+@RequestMapping(EndPointUrls.Todo.BASE)
 @RestController
 public class TodoController {
     private final TodoService service;
@@ -22,9 +19,9 @@ public class TodoController {
         this.service = service;
     }
 
-    @PostMapping("/tasks")
+    @PostMapping(EndPointUrls.Todo.TASKS)
     public List<Task> tasks(HttpServletRequest request) {
-        final String username = (String) request.getAttribute("username");
+        final String username = (String) request.getAttribute(AppConstants.RequestField.USERNAME);
         return Optional.ofNullable(service.tasks(username)).orElse(List.of());
     }
 }

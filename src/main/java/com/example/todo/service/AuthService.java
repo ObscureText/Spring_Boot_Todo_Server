@@ -1,8 +1,11 @@
 package com.example.todo.service;
 
+import com.example.todo.constants.Messages;
+import com.example.todo.exception.AppException;
 import com.example.todo.models.User;
 import com.example.todo.repository.AuthRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,7 +24,7 @@ public class AuthService {
             return repository.createUserSession(user);
         }
 
-        return null;
+        throw new AppException(HttpStatus.BAD_REQUEST, Messages.Error.INCORRECT_CREDENTIALS);
     }
 
     public void logout(String token) {
