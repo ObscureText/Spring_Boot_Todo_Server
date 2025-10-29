@@ -14,12 +14,21 @@ public class AuthService {
         this.repository = repository;
     }
 
-    public Boolean login(String username, String password) {
+    public String login(String username, String password) {
         final User user = repository.getUserByUsername(username);
-        return user != null && user.password.equals(password);
+
+        if (user != null && user.password.equals(password)) {
+            return repository.createUserSession(user);
+        }
+
+        return null;
     }
 
-    public User getUserByUsername(String username) {
-        return repository.getUserByUsername(username);
+    public void logout(String token) {
+        repository.deleteUserSession(token);
+    }
+
+    public String getUserNameFromSession(String token) {
+        return repository.getUserNameFromSession(token);
     }
 }

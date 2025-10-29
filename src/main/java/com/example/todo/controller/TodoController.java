@@ -3,6 +3,7 @@ package com.example.todo.controller;
 import com.example.todo.repository.TodoRepository;
 import com.example.todo.models.Task;
 import com.example.todo.service.TodoService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,7 +23,8 @@ public class TodoController {
     }
 
     @PostMapping("/tasks")
-    public List<Task> tasks(@RequestBody String username) {
+    public List<Task> tasks(HttpServletRequest request) {
+        final String username = (String) request.getAttribute("username");
         return Optional.ofNullable(service.tasks(username)).orElse(List.of());
     }
 }

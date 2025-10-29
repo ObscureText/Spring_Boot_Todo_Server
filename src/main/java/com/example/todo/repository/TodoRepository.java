@@ -9,13 +9,13 @@ import java.util.Map;
 @Repository
 public class TodoRepository {
     private final Map<String, List<Task>> tasks = Map.of(
-        "one", List.of(
+        "1", List.of(
             new Task("1", "Car wash", false),
             new Task("2", "Buy groceries", true),
             new Task("3", "Finish Spring Boot tutorial", false)
         ),
-        "two", List.of(),
-        "three", List.of(
+        "2", List.of(),
+        "3", List.of(
             new Task("6", "Read a book", false),
             new Task("7", "Call mom", true),
             new Task("8", "Clean room", false)
