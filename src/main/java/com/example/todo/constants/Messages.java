@@ -7,6 +7,7 @@ public class Messages {
         private Error() {}
 
         public static final String INVALID_TOKEN = "Invalid token";
+        public static final String TOKEN_EXPIRED = "Token expired";
         public static final String USER_NOT_FOUND = "User not found";
         public static final String NO_TOKEN_PROVIDED = "No token provided";
         public static final String SOMETHING_WENT_WRONG = "Something went wrong";

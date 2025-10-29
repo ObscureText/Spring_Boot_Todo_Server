@@ -35,16 +35,6 @@ public class AuthRepository {
         }
     }
 
-    public String createUserSession(User user) {
-        final String id = UUID.randomUUID().toString();
-        sessions.put(id, user);
-        return id;
-    }
-
-    public void deleteUserSession(String token) {
-        sessions.remove(token);
-    }
-
     public String getUserNameFromSession(String token) {
         final User user = sessions.get(token);
 

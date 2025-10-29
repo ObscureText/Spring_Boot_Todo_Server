@@ -3,7 +3,7 @@ package com.example.todo.middleware;
 import com.example.todo.constants.AppConstants;
 import com.example.todo.constants.Messages;
 import com.example.todo.exception.AppException;
-import com.example.todo.service.AuthService;
+import com.example.todo.service.JwtService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,9 +14,9 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
 public class AppInterceptor implements HandlerInterceptor {
-    private final AuthService service;
+    private final JwtService service;
 
-    public AppInterceptor(AuthService service) {
+    public AppInterceptor(JwtService service) {
         this.service = service;
     }
 
@@ -31,7 +31,7 @@ public class AppInterceptor implements HandlerInterceptor {
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(AppConstants.Cookie.TOKEN) && cookie.getValue() != null) {
-                    final String username = service.getUserNameFromSession(cookie.getValue());
+                    final String username = service.validateAndGetUsername(cookie.getValue());
                     request.setAttribute(AppConstants.RequestField.USERNAME, username);
 
                     return true;
